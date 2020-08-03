@@ -1,4 +1,4 @@
-package com.movies.ratingdataservice.models;
+package com.movies.moviecatalogservice.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
