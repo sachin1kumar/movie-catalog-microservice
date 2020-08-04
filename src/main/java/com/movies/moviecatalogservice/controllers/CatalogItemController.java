@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @RestController
 @RequestMapping("/catalog")
@@ -20,16 +21,32 @@ public class CatalogItemController {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private WebClient.Builder webClientBuilder;
+
     @RequestMapping("/{userid}")
     public CatalogItem getCatalog(@PathVariable Long userid){
 
-        //TODO
         //get all rated movie IDs.
-        Rating rating = restTemplate.getForObject("http://localhost:8083/ratingsdata/123", Rating.class);
+        //using Rest template.
+        //Rating rating = restTemplate.getForObject("http://localhost:8083/ratingsdata/123", Rating.class);
+        //using web client builder.
+        Rating rating = webClientBuilder.build()
+                .get()
+                .uri("http://localhost:8083/ratingsdata/123")
+                .retrieve()
+                .bodyToMono(Rating.class)
+                .block();
 
         //For each movie id, call movie info service and get details.
-        MovieInfo movieInfo = restTemplate.getForObject("http://localhost:8082/movies/"+rating.getMovieid(), MovieInfo.class);
-
+        //MovieInfo movieInfo = restTemplate.getForObject("http://localhost:8082/movies/"+rating.getMovieid(), MovieInfo.class);
+        //using web client builder.
+        MovieInfo movieInfo = webClientBuilder.build()
+                .get()
+                .uri("http://localhost:8082/movies/"+rating.getMovieid())
+                .retrieve()
+                .bodyToMono(MovieInfo.class)
+                .block();
         System.out.println("Rating: "+rating.getMovieid()+", MovieInfo:"+movieInfo.getMovieid());
         //put them all together.
 
