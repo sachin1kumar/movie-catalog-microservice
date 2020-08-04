@@ -29,24 +29,24 @@ public class CatalogItemController {
 
         //get all rated movie IDs.
         //using Rest template.
-        //Rating rating = restTemplate.getForObject("http://localhost:8083/ratingsdata/123", Rating.class);
+        Rating rating = restTemplate.getForObject("http://localhost:8083/ratingsdata/123", Rating.class);
         //using web client builder.
-        Rating rating = webClientBuilder.build()
+        /*Rating rating = webClientBuilder.build()
                 .get()
                 .uri("http://localhost:8083/ratingsdata/123")
                 .retrieve()
                 .bodyToMono(Rating.class)
-                .block();
+                .block();*/
 
         //For each movie id, call movie info service and get details.
-        //MovieInfo movieInfo = restTemplate.getForObject("http://localhost:8082/movies/"+rating.getMovieid(), MovieInfo.class);
+        MovieInfo movieInfo = restTemplate.getForObject("http://localhost:8082/movies/"+rating.getMovieid(), MovieInfo.class);
         //using web client builder.
-        MovieInfo movieInfo = webClientBuilder.build()
+        /*MovieInfo movieInfo = webClientBuilder.build()
                 .get()
                 .uri("http://localhost:8082/movies/"+rating.getMovieid())
                 .retrieve()
                 .bodyToMono(MovieInfo.class)
-                .block();
+                .block();*/
         System.out.println("Rating: "+rating.getMovieid()+", MovieInfo:"+movieInfo.getMovieid());
         //put them all together.
 
