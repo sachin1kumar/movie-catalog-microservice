@@ -4,6 +4,7 @@ import com.movies.moviecatalogservice.models.CatalogItem;
 import com.movies.moviecatalogservice.models.MovieInfo;
 import com.movies.moviecatalogservice.models.Rating;
 import com.movies.moviecatalogservice.repositories.CatalogItemRepository;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,7 @@ public class CatalogItemController {
     private WebClient.Builder webClientBuilder;
 
     @RequestMapping("/{userid}")
+    @HystrixCommand(fallbackMethod = "getFallBackMethod")
     public CatalogItem getCatalog(@PathVariable Long userid){
 
         //get all rated movie IDs.
@@ -51,5 +53,11 @@ public class CatalogItemController {
         //put them all together.
 
         return catalogItemRepository.getOne(movieInfo.getMovieid());
+    }
+
+    public CatalogItem getFallBackMethod(@PathVariable Long userid) {
+        CatalogItem catalogItem = new CatalogItem();
+        catalogItem.setDescription("No data right now");
+        return catalogItem;
     }
 }
